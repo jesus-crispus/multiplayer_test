@@ -1,0 +1,47 @@
+[gd_scene load_steps=9 format=3 uid="uid://cuog8nwp8wd15"]
+
+[ext_resource type="Script" uid="uid://sjvvxqtc6fa7" path="res://player.gd" id="1_yvhtj"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6xxru"]
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_yvhtj"]
+noise = SubResource("FastNoiseLite_6xxru")
+seamless = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_aq2ne"]
+noise = SubResource("FastNoiseLite_6xxru")
+seamless = true
+as_normal_map = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_etjlb"]
+albedo_texture = SubResource("NoiseTexture2D_yvhtj")
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_aq2ne")
+uv1_scale = Vector3(10, 10, 10)
+
+[sub_resource type="QuadMesh" id="QuadMesh_6xxru"]
+material = SubResource("StandardMaterial3D_etjlb")
+size = Vector2(1000, 1000)
+orientation = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6xxru"]
+albedo_color = Color(0.93, 0.074399985, 0.074399985, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_yvhtj"]
+material = SubResource("StandardMaterial3D_6xxru")
+
+[node name="MeshInstance3D" type="MeshInstance3D"]
+mesh = SubResource("QuadMesh_6xxru")
+
+[node name="player" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.971198, 0)
+script = ExtResource("1_yvhtj")
+speed = 8.39
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6588068, 0)
+mesh = SubResource("SphereMesh_yvhtj")
+
+[node name="Camera3D" type="Camera3D" parent="player"]
+transform = Transform3D(1.9106855e-15, 1, 4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 1, 0, -4.371139e-08, 0, 51.64427, 0)
