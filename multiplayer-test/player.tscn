@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://b6725c0c0xjlq"]
+
+[ext_resource type="Script" uid="uid://sjvvxqtc6fa7" path="res://player.gd" id="1_4flbx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6xxru"]
+albedo_color = Color(0.93, 0.074399985, 0.074399985, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_yvhtj"]
+material = SubResource("StandardMaterial3D_6xxru")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4flbx"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="player" type="Node3D" unique_id=16444793]
+script = ExtResource("1_4flbx")
+speed = 8.39
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1149608161]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6588068, 0)
+mesh = SubResource("SphereMesh_yvhtj")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1830994616]
+transform = Transform3D(1.9106855e-15, 1, 4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 1, 0, -4.371139e-08, 0, 51.64427, 0)
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=114554934]
+replication_config = SubResource("SceneReplicationConfig_4flbx")

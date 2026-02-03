@@ -1,6 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://bmx0dmtliwnsy"]
+[gd_scene format=3 uid="uid://bmx0dmtliwnsy"]
 
 [ext_resource type="PackedScene" uid="uid://cuog8nwp8wd15" path="res://mesh_instance_3d.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://b6725c0c0xjlq" path="res://player.tscn" id="2_0xm2m"]
+
+[sub_resource type="GDScript" id="GDScript_1bvp3"]
+script/source = "extends Node
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	print(IP.get_local_addresses())
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -15,13 +30,108 @@ sky = SubResource("Sky_h2yge")
 tonemap_mode = 2
 glow_enabled = true
 
-[node name="main" type="Node"]
+[sub_resource type="GDScript" id="GDScript_ig7tw"]
+script/source = "extends Node
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+const PORT: int = 42096 # Below 65535 (16-bit unsigned max value)
+
+var peer: ENetMultiplayerPeer
+
+func start_server() -> void:
+	peer = ENetMultiplayerPeer.new()
+	peer.create_server(PORT)
+	multiplayer.multiplayer_peer = peer
+
+
+func start_client() -> void:
+	peer = ENetMultiplayerPeer.new()
+	peer.create_client(\"localhost\", PORT)
+	multiplayer.multiplayer_peer = peer
+"
+
+[sub_resource type="GDScript" id="GDScript_0xm2m"]
+script/source = "extends Control
+
+
+# Called when the node enters the scene tree for the first time.
+func suicide() -> void:
+	self.queue_free()
+"
+
+[sub_resource type="GDScript" id="GDScript_h2yge"]
+script/source = "extends MultiplayerSpawner
+
+
+@export var network_player: PackedScene
+
+func _ready() -> void:
+	multiplayer.peer_connected.connect(spawn_player)
+
+
+func spawn_player(id: int) -> void:
+	if !multiplayer.is_server(): return
+	print(\"spawned player\")
+	var player: Node = network_player.instantiate()
+
+	# Node name is s through MultiplayerSpawner, we can use this to set authority to the player.
+	player.name = str(id)
+
+	get_node(spawn_path).call_deferred(\"add_child\", player)
+"
+
+[node name="main" type="Node" unique_id=738623822]
+script = SubResource("GDScript_1bvp3")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=917608222]
 environment = SubResource("Environment_1bvp3")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1262670765]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="MeshInstance3D" parent="." instance=ExtResource("1_ig7tw")]
+[node name="MeshInstance3D" parent="." unique_id=1848765170 instance=ExtResource("1_ig7tw")]
+
+[node name="network_maneger" type="Node" parent="." unique_id=1938675562]
+script = SubResource("GDScript_ig7tw")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="network_maneger" unique_id=331889799]
+
+[node name="Control" type="Control" parent="network_maneger/CanvasLayer" unique_id=9174147]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_0xm2m")
+
+[node name="MarginContainer" type="MarginContainer" parent="network_maneger/CanvasLayer/Control" unique_id=911231887]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="network_maneger/CanvasLayer/Control/MarginContainer" unique_id=253571282]
+layout_mode = 2
+
+[node name="Button1" type="Button" parent="network_maneger/CanvasLayer/Control/MarginContainer/VBoxContainer" unique_id=967252963]
+layout_mode = 2
+text = "start server"
+
+[node name="Button2" type="Button" parent="network_maneger/CanvasLayer/Control/MarginContainer/VBoxContainer" unique_id=936684330]
+layout_mode = 2
+text = "start client"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=280711411]
+_spawnable_scenes = PackedStringArray("uid://b6725c0c0xjlq")
+spawn_path = NodePath("..")
+script = SubResource("GDScript_h2yge")
+network_player = ExtResource("2_0xm2m")
+
+[node name="Node3D" type="Node3D" parent="." unique_id=1736861320]
+
+[node name="Camera3D" type="Camera3D" parent="Node3D" unique_id=1619686737]
+transform = Transform3D(1.9106855e-15, 1, 4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 1, 0, -4.371139e-08, 0, 51.64427, 0)
+
+[connection signal="button_up" from="network_maneger/CanvasLayer/Control/MarginContainer/VBoxContainer/Button1" to="network_maneger" method="start_server"]
+[connection signal="button_up" from="network_maneger/CanvasLayer/Control/MarginContainer/VBoxContainer/Button1" to="network_maneger/CanvasLayer/Control" method="suicide"]
+[connection signal="button_up" from="network_maneger/CanvasLayer/Control/MarginContainer/VBoxContainer/Button2" to="network_maneger" method="start_client"]
+[connection signal="button_up" from="network_maneger/CanvasLayer/Control/MarginContainer/VBoxContainer/Button2" to="network_maneger/CanvasLayer/Control" method="suicide"]
