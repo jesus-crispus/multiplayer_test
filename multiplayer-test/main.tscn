@@ -47,6 +47,7 @@ func start_server() -> void:
 func start_client() -> void:
 	peer = ENetMultiplayerPeer.new()
 	peer.create_client(%TextEdit.text, PORT)
+	print(\"conection status: \",peer.get_connection_status())
 	print(\"text INPUT: \",%TextEdit.text)
 	print(\"regular: \",\"localhost\", PORT)
 	
