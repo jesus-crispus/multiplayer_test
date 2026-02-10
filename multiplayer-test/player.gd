@@ -14,4 +14,4 @@ func _process(delta: float) -> void:
 	input_dir = input_dir.normalized()
 	position.x += input_dir.x * speed * delta
 	position.z += input_dir.y * speed * delta
-	print("position", position)
+	#print("position", position)

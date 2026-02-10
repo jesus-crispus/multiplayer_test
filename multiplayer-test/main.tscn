@@ -46,7 +46,10 @@ func start_server() -> void:
 
 func start_client() -> void:
 	peer = ENetMultiplayerPeer.new()
-	peer.create_client(\"localhost\", PORT)
+	peer.create_client(%TextEdit.text, PORT)
+	print(\"text INPUT: \",%TextEdit.text)
+	print(\"regular: \",\"localhost\", PORT)
+	
 	multiplayer.multiplayer_peer = peer
 "
 
@@ -119,6 +122,16 @@ text = "start server"
 [node name="Button2" type="Button" parent="network_maneger/CanvasLayer/Control/MarginContainer/VBoxContainer" unique_id=936684330]
 layout_mode = 2
 text = "start client"
+
+[node name="MarginContainer" type="MarginContainer" parent="network_maneger/CanvasLayer/Control/MarginContainer/VBoxContainer" unique_id=435703068]
+custom_minimum_size = Vector2(0, 41.55)
+layout_mode = 2
+
+[node name="TextEdit" type="TextEdit" parent="network_maneger/CanvasLayer/Control/MarginContainer/VBoxContainer/MarginContainer" unique_id=1782056878]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Input IP"
+wrap_mode = 1
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=280711411]
 _spawnable_scenes = PackedStringArray("uid://b6725c0c0xjlq")
