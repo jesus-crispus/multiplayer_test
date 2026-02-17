@@ -52,6 +52,10 @@ func start_client() -> void:
 	print(\"regular: \",\"localhost\", PORT)
 	
 	multiplayer.multiplayer_peer = peer
+
+func _process(delta: float) -> void:
+	if peer != null:
+		print(\"conection status: \",peer.get_connection_status())
 "
 
 [sub_resource type="GDScript" id="GDScript_0xm2m"]
