@@ -35,7 +35,7 @@ script/source = "extends Node
 
 
 const PORT: int = 42096 # Below 65535 (16-bit unsigned max value)
-
+const PORT2: int = 42069
 var peer: ENetMultiplayerPeer
 
 func start_server() -> void:
@@ -47,7 +47,7 @@ func start_server() -> void:
 #10.114.18.199
 func start_client() -> void:
 	peer = ENetMultiplayerPeer.new()
-	peer.create_client(%TextEdit.text, PORT,10,1000,1000,PORT)
+	peer.create_client(%TextEdit.text, PORT,0,0,0,PORT2)
 	print(\"conection status: \",peer.get_connection_status())
 	print(\"text INPUT: \",%TextEdit.text)
 	print(\"regular: \",\"localhost\", PORT)
